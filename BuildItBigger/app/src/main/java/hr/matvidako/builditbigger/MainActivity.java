@@ -1,43 +1,29 @@
 package hr.matvidako.builditbigger;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
 import hr.matvidako.jokes.Jokes;
+import hr.matvidako.jokesandroidlib.JokeActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    Jokes jokes = new Jokes();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Jokes jokes = new Jokes();
-        TextView jokeTv = (TextView) findViewById(R.id.joke);
-        jokeTv.setText(jokes.getRandomJoke());
+        jokes = new Jokes();
+        findViewById(R.id.joke_btn).setOnClickListener(this);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void onClick(View view) {
+        Intent intent = JokeActivity.buildIntent(this, jokes.getRandomJoke());
+        startActivity(intent);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }
