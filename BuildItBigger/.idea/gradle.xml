@@ -10,6 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/jokecloud" />
             <option value="$PROJECT_DIR$/jokesandroidlib" />
             <option value="$PROJECT_DIR$/jokeslib" />
           </set>
