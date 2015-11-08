@@ -3,7 +3,6 @@ package hr.matvidako.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import java.io.IOException;
 
 import hr.matvidako.jokes.myApi.MyApi;
+import hr.matvidako.jokes.myApi.model.Joke;
 import hr.matvidako.jokesandroidlib.JokeActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+        new EndpointsAsyncTask().execute(this);
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
 
         private MyApi myApiService = null;
         private Context context;
@@ -59,13 +59,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        protected String doInBackground(Pair<Context, String>... params) {
-
-            context = params[0].first;
-            String name = params[0].second;
-
+        protected String doInBackground(Context... params) {
+            context = params[0];
             try {
-                return myApiService.sayHi(name).execute().getData();
+                Joke joke = myApiService.randomJoke().execute();
+                return joke.getText();
             } catch (IOException e) {
                 return e.getMessage();
             }
