@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        new EndpointsAsyncTask().execute(this);
+        new RandomJokeAsyncTask().execute(this);
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+    public static class RandomJokeAsyncTask extends AsyncTask<Context, Void, String> {
 
         private MyApi myApiService = null;
         private Context context;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(String result) {
             if (context != null) {
                 Intent intent = JokeActivity.buildIntent(context, result);
-                startActivity(intent);
+                context.startActivity(intent);
             }
         }
     }

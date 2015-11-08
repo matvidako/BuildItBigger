@@ -24,12 +24,13 @@ import com.google.api.server.spi.config.ApiNamespace;
 )
 public class JokeEndpoint {
 
+    JokeFactory jokeFactory = new JokeFactory();
+
     /**
      * A simple endpoint method that takes a name and says Hi back
      */
     @ApiMethod(name = "randomJoke")
     public Joke getRandomJoke() {
-        JokeFactory jokeFactory = new JokeFactory();
         return jokeFactory.createRandomJoke();
     }
 
