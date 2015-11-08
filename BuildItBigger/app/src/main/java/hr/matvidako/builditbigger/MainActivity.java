@@ -1,29 +1,83 @@
 package hr.matvidako.builditbigger;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import hr.matvidako.jokes.Jokes;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+
+import java.io.IOException;
+
+import hr.matvidako.jokes.myApi.MyApi;
 import hr.matvidako.jokesandroidlib.JokeActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Jokes jokes = new Jokes();
+    private static String localhostUrlGenymotion = "http://10.0.3.2:8080";
+    private static String localhostUrlStandardEmulator = "http://10.0.2.2:8080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        jokes = new Jokes();
         findViewById(R.id.joke_btn).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        Intent intent = JokeActivity.buildIntent(this, jokes.getRandomJoke().text);
-        startActivity(intent);
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+    }
+
+    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+
+        private MyApi myApiService = null;
+        private Context context;
+
+        @Override
+        protected void onPreExecute() {
+            if (myApiService != null) {
+                return;
+            }
+
+            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
+                    new AndroidJsonFactory(), null)
+                    .setRootUrl(localhostUrlGenymotion + "/_ah/api/")
+                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                        @Override
+                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+                            abstractGoogleClientRequest.setDisableGZipContent(true);
+                        }
+                    });
+            myApiService = builder.build();
+        }
+
+        @Override
+        protected String doInBackground(Pair<Context, String>... params) {
+
+            context = params[0].first;
+            String name = params[0].second;
+
+            try {
+                return myApiService.sayHi(name).execute().getData();
+            } catch (IOException e) {
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (context != null) {
+                Intent intent = JokeActivity.buildIntent(context, result);
+                startActivity(intent);
+            }
+        }
     }
 
 }
