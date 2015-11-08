@@ -27,6 +27,7 @@ android {
             applicationId = "hr.matvidako.builditbigger.free"
         }
     }
+
 }
 
 dependencies {
@@ -35,5 +36,5 @@ dependencies {
     compile project(':jokesandroidlib')
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile project(path: ':jokecloud', configuration: 'android-endpoints')
-    compile 'com.google.android.gms:play-services:7.3.0'
+    freeCompile 'com.google.android.gms:play-services:7.3.0'
 }
