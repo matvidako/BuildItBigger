@@ -28,9 +28,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         findViewById(R.id.joke_btn).setOnClickListener(this);
-        setupAd();
+
+        boolean shouldShowAds = getResources().getBoolean(R.bool.show_ads);
+        if(shouldShowAds) {
+            setupAd();
+        }
     }
 
     private void setupAd() {
